@@ -1,0 +1,47 @@
+{
+	"rules": {
+		"no-parameter-reassignment": true,
+		"curly": true,
+		"no-conditional-assignment": true,
+		"no-duplicate-imports": true,
+		"no-duplicate-super": true,
+		"no-duplicate-variable": true,
+		"no-eval": true,
+		"no-invalid-template-strings": true,
+		"no-shadowed-variable": true,
+		"no-switch-case-fall-through": true,
+		"no-var-keyword": true,
+		"prefer-const": true,
+		"switch-default": true,
+		"triple-equals": true,
+
+		"array-type": [true, "array"],
+		"arrow-return-shorthand": true,
+		"class-name": true,
+		"comment-format": [true, "check-space"],
+		"increment-decrement": [true, "allow-post"],
+		"newline-per-chained-call": true,
+		"no-unnecessary-callback-wrapper": true,
+		"no-unnecessary-initializer": true,
+		"object-literal-key-quotes": [true, "as-needed"],
+		"one-variable-per-declaration": [true, "ignore-for-loop"],
+		"prefer-method-signature": true,
+		"space-before-function-paren": [
+			true,
+			{
+				"anonymous": "always",
+				"named": "never",
+				"asyncArrow": "always"
+			}
+		],
+
+		"arrow-parens": true,
+		"import-spacing": true,
+		"indent": [true, "tabs", 4],
+		"newline-before-return": true,
+		"number-literal-format": true,
+		"quotemark": [true, "single"],
+		"semicolon": [true, "always"],
+		"whitespace": true
+	}
+}
