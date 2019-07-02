@@ -1,7 +1,7 @@
 import { EncryptionAlgorithm } from './EncryptionAlgorithm';
 import { observable, action, computed } from 'mobx';
 import { modulo } from '../utils/modulo';
-import { cryptoGlobals } from './Globals';
+import { RootStore } from './RootStore';
 
 enum ACTION_TYPE {
 	ENCRYPT = 'ENCRYPT',
@@ -21,6 +21,7 @@ interface CeasarCipherStep {
 
 class CeasarCipher extends EncryptionAlgorithm {
 
+	private readonly rootStore: RootStore;
 	private static readonly validatorPattern: RegExp = /^[A-Z]+$/;
 	private static readonly alphabetStart: number = 65;
 	private static readonly alphabetLength: number = 26;
@@ -36,8 +37,10 @@ class CeasarCipher extends EncryptionAlgorithm {
 	@observable outputText: string | null = null;
 	@observable steps: CeasarCipherStep[] = [];
 
-	constructor() {
+	constructor(rootStore: RootStore) {
 		super();
+
+		this.rootStore = rootStore;
 	}
 
 	/**
@@ -103,7 +106,7 @@ class CeasarCipher extends EncryptionAlgorithm {
 		if (this.isValid && this.proposedInputText !== null) {
 			this.setlastAction(ACTION_TYPE.ENCRYPT);
 			this.inputText = this.proposedInputText;
-			cryptoGlobals.visualizerStore.clearSteps();
+			this.rootStore.visualizerStore.clearSteps();
 			this.outputText = '';
 			const newSteps: CeasarCipherStep[] = [];
 
@@ -123,7 +126,7 @@ class CeasarCipher extends EncryptionAlgorithm {
 					outputTextIndex: i,
 					outputTextCharacter: encryptedCharacter
 				};
-				cryptoGlobals.visualizerStore.addStep(stepValue);
+				this.rootStore.visualizerStore.addStep(stepValue);
 				newSteps.push(stepValue);
 				this.outputText += encryptedCharacter;
 			}
@@ -138,7 +141,7 @@ class CeasarCipher extends EncryptionAlgorithm {
 		if (this.isValid && this.proposedInputText !== null) {
 			this.setlastAction(ACTION_TYPE.DECRYPT);
 			this.inputText = this.proposedInputText;
-			cryptoGlobals.visualizerStore.clearSteps();
+			this.rootStore.visualizerStore.clearSteps();
 			this.outputText = '';
 			const newSteps: CeasarCipherStep[] = [];
 
@@ -158,7 +161,7 @@ class CeasarCipher extends EncryptionAlgorithm {
 					outputTextIndex: i,
 					outputTextCharacter: decryptedCharacter
 				};
-				cryptoGlobals.visualizerStore.addStep(stepValue);
+				this.rootStore.visualizerStore.addStep(stepValue);
 				newSteps.push(stepValue);
 				this.outputText += decryptedCharacter;
 			}

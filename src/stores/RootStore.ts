@@ -2,24 +2,22 @@ import { EncryptionAlgorithm } from './EncryptionAlgorithm';
 import { CeasarCipher } from './CeasarCipher';
 import { VisualizerStore } from './VisualizerStore';
 import { VisualizerControlStore } from './VisualizerControlStore';
+import { ModuleStore } from './ModuleStore';
 
-class Globals {
+class RootStore {
 	algorithm: EncryptionAlgorithm;
 	visualizerStore: VisualizerStore;
 	visualizerControlStore: VisualizerControlStore;
+	moduleStore: ModuleStore;
 
 	constructor() {
-		const cipher: CeasarCipher = new CeasarCipher();
-		this.algorithm = cipher;
-		this.visualizerStore = new VisualizerStore({
-			ceasarCipher: cipher
-		});
+		this.moduleStore = new ModuleStore();
+		this.algorithm = new CeasarCipher(this);
+		this.visualizerStore = new VisualizerStore(this);
 		this.visualizerControlStore = new VisualizerControlStore();
 	}
 }
 
-const cryptoGlobals: Globals = new Globals();
-
 export {
-	cryptoGlobals
+	RootStore
 };

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { wrapWithMobx } from '../utils/wrapWithMobx';
+import { injectWithState } from '../utils/wrapWithMobx';
 import { VisualizerSpeed } from '../stores/VisualizerControlStore';
+import { GlobalState } from './CryptoViz';
 
 interface SpeedSelectorDataProps {
 	currentSpeed: VisualizerSpeed;
 	availableSpeeds: VisualizerSpeed[];
-	disabled?: boolean;
+	isEnabled?: boolean;
 }
 
 interface SpeedSelectorEvents {
@@ -17,12 +18,12 @@ type SpeedSelectorProps = SpeedSelectorDataProps & SpeedSelectorEvents;
 class BaseSpeedSlector extends React.Component<SpeedSelectorProps> {
 
 	render() {
-		const { currentSpeed, availableSpeeds, changeSpeed, disabled = false } = this.props;
+		const { currentSpeed, availableSpeeds, changeSpeed, isEnabled = true } = this.props;
 
 		return (
 			<select
 				value={currentSpeed}
-				disabled={disabled}
+				disabled={!isEnabled}
 				onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
 					// @ts-ignore value is a string, but being assigned to an enum
 					changeSpeed(event.target.value);
@@ -36,7 +37,19 @@ class BaseSpeedSlector extends React.Component<SpeedSelectorProps> {
 	}
 }
 
-const SpeedSelector = wrapWithMobx<SpeedSelectorProps>(BaseSpeedSlector, 'SpeedSelector');
+function stateInjector({rootStore}: GlobalState): SpeedSelectorProps {
+	return {
+		currentSpeed: rootStore.visualizerControlStore.animationSpeed,
+		availableSpeeds: rootStore.visualizerControlStore.availableSpeeds,
+		changeSpeed: rootStore.visualizerControlStore.setAnimationSpeed
+	};
+}
+
+interface StatefulSpeedSelectorProps {
+	isEnabled: boolean;
+}
+
+const SpeedSelector = injectWithState<StatefulSpeedSelectorProps>(stateInjector, BaseSpeedSlector, 'SpeedSelector');
 
 export {
 	SpeedSelector

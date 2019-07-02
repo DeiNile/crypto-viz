@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 import { BoxedCharacter } from './BoxedCharacter';
-import { cryptoGlobals } from '../stores/Globals';
 import { Dimension } from '../stores/Geometry';
 
 interface BoxedCharacterLineProps {
 	characters: string[];
 	x: number;
 	y: number;
+	fontSize: number;
 	boxSize?: Dimension;
 	boxAlternatingColor?: string;
 }
@@ -16,7 +16,7 @@ const DEFAULT_CHARACTER_BOX_WIDTH: number = 16;
 const DEFAULT_CHARACTER_BOX_HEIGHT: number = 16;
 
 const BaseBoxedCharacterLine: React.SFC<BoxedCharacterLineProps> = (props: BoxedCharacterLineProps) => {
-	const { characters, x, y, boxSize } = props;
+	const { characters, x, y, boxSize, fontSize } = props;
 
 	const boxWidth: number = boxSize === undefined
 		? DEFAULT_CHARACTER_BOX_WIDTH
@@ -37,7 +37,7 @@ const BaseBoxedCharacterLine: React.SFC<BoxedCharacterLineProps> = (props: Boxed
 						width={boxWidth}
 						height={boxHeight}
 						character={character}
-						fontSize={cryptoGlobals.visualizerStore.fontSize}
+						fontSize={fontSize}
 						key={`${i}|${character}`}
 					/>);
 				})
@@ -49,5 +49,6 @@ const BaseBoxedCharacterLine: React.SFC<BoxedCharacterLineProps> = (props: Boxed
 const BoxedCharacterLine = wrapWithMobx<BoxedCharacterLineProps>(BaseBoxedCharacterLine, 'BoxedCharacterLine');
 
 export {
-	BoxedCharacterLine
+	BoxedCharacterLine,
+	BoxedCharacterLineProps
 };

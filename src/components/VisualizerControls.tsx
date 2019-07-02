@@ -2,7 +2,6 @@ import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 import { StyledButton } from '../styled-components/StyledButton';
 import { SpeedSelector } from './SpeedSelector';
-import { cryptoGlobals } from '../stores/Globals';
 
 interface VisualizerControlsProps {
 	isPlaying: boolean;
@@ -42,10 +41,7 @@ const BaseVisualizerControls: React.SFC<VisualizerControlsProps> = (props: Visua
 				Next
 			</StyledButton>
 			<SpeedSelector
-				currentSpeed={cryptoGlobals.visualizerControlStore.animationSpeed}
-				availableSpeeds={cryptoGlobals.visualizerControlStore.availableSpeeds}
-				changeSpeed={cryptoGlobals.visualizerControlStore.setAnimationSpeed}
-				disabled={!canNext && !canBack}
+				isEnabled={canNext || canBack}
 			/>
 		</div>
 	);

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { wrapWithMobx } from '../utils/wrapWithMobx';
+import { injectWithState } from '../utils/wrapWithMobx';
 import styled from 'styled-components';
+import { GlobalState } from './CryptoViz';
 
 interface HighlighterProps {
 	className?: string;
@@ -33,11 +34,22 @@ const BaseHighlighter: React.SFC<HighlighterProps> = (props: HighlighterProps) =
 	);
 };
 
-const Highlighter = wrapWithMobx<HighlighterProps>(BaseHighlighter, 'Highlighter');
+type InjectedHighlighterProps = Pick<HighlighterProps, 'animationSpeed'>;
+type StateFulHighlighterProps = Omit<HighlighterProps, keyof InjectedHighlighterProps>;
+
+function stateInjector({rootStore}: GlobalState): InjectedHighlighterProps {
+	return {
+		animationSpeed: rootStore.visualizerControlStore.animationSpeedInMs
+	};
+}
+
+const Highlighter = injectWithState<StateFulHighlighterProps>(stateInjector, BaseHighlighter, 'Highlighter');
 
 const StyledHighlighter = styled(Highlighter)`
 	transition: transform ${(props) => {
+		// @ts-ignore
 		return props.animationSpeed !== undefined
+		// @ts-ignore
 			? props.animationSpeed
 			: 500;
 	}}ms ease-in-out;

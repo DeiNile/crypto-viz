@@ -1,24 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { wrapWithMobx } from '../../../utils/wrapWithMobx';
+import { injectWithState } from '../../../utils/wrapWithMobx';
 import { CeasarAnimationType } from '../../../stores/VisualizerStore';
 import { StyledExplanationCollapser } from '../../../styled-components/StyledExplanationCollapser';
 import { StyledExplanationExpander } from '../../../styled-components/StyledExplanationExpander';
-import { CeasarCipherStep } from '../../../stores/CeasarCipher';
+import { CeasarCipherStep, CeasarCipher, ACTION_TYPE } from '../../../stores/CeasarCipher';
+import { GlobalState } from '../../../components/CryptoViz';
 
 
 interface CaesarExplanationDatProps {
 	className?: string;
-	currentStep: CeasarCipherStep;
+	currentStep: CeasarCipherStep | null;
 	animationStep: CeasarAnimationType;
 	shiftAmount: number;
 	isEncrypting: boolean;
-	isShowing: boolean;
-	isShowingText: boolean;
+	isExpanded: boolean;
+	isExplanationTextVisible: boolean;
+	isVisible: boolean;
 }
 
 interface CeasarExplanationEvents {
-	setIsShowing(isShowing: boolean): void;
+	setIsExpanded(isExpanded: boolean): void;
 }
 
 type CaesarExplanationProps = CaesarExplanationDatProps & CeasarExplanationEvents;
@@ -70,6 +72,10 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 	getCurrentExplanation(): string {
 		const { animationStep, currentStep } = this.props;
 
+		if (currentStep === null) {
+			return '';
+		}
+
 		if (animationStep === CeasarAnimationType.INPUT) {
 			return this.getInputCharacter(currentStep.inputTextIndex + 1);
 		}
@@ -85,26 +91,30 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 	}
 
 	collapse(): void {
-		const { setIsShowing } = this.props;
+		const { setIsExpanded: setIsShowing } = this.props;
 
 		setIsShowing(false);
 	}
 
 	expand(): void {
-		const { setIsShowing } = this.props;
+		const { setIsExpanded: setIsShowing } = this.props;
 
 		setIsShowing(true);
 	}
 
 	render() {
-		const { isShowing, isShowingText, className } = this.props;
+		const { isExpanded, isExplanationTextVisible, className, isVisible } = this.props;
 
-		if (isShowing) {
+		if (!isVisible) {
+			return null;
+		}
+
+		if (isExpanded) {
 			return (
 				<div className={className}>
 					<StyledExplanationCollapser text='Hide Walkthrough' collapse={this.collapse} />
 					{
-						!isShowingText
+						!isExplanationTextVisible
 							? null
 							: <div className='explanation'>{ this.getCurrentExplanation() }</div>
 					}
@@ -120,10 +130,26 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 	}
 }
 
-const CaesarExplanation = wrapWithMobx<CaesarExplanationProps>(BaseCaesarExplanation, 'CaesarExplanation');
+function stateInjector({rootStore}: GlobalState): CaesarExplanationProps {
+	return {
+		isVisible: rootStore.visualizerStore.currentlyHighlightedText !== null,
+		isExpanded: rootStore.visualizerStore.isShowingExplanation,
+		currentStep: rootStore.visualizerStore.currentStep,
+		isExplanationTextVisible: rootStore.algorithm.inputText !== null && rootStore.algorithm.outputText !== null,
+		isEncrypting: (rootStore.algorithm as CeasarCipher).lastAction === ACTION_TYPE.ENCRYPT,
+		animationStep: rootStore.visualizerStore.animationStep,
+		shiftAmount: (rootStore.algorithm as CeasarCipher).shiftAmount,
+		setIsExpanded: rootStore.visualizerStore.setIsShowingExplanation
+	};
+}
+
+interface StatefulCaesarExplanation {}
+
+const CaesarExplanation = injectWithState<StatefulCaesarExplanation>(stateInjector, BaseCaesarExplanation, 'CaesarExplanation');
 
 const StyledCaesarExplanation = styled(CaesarExplanation)`
-	background-color: ${(props) => props.isShowing ? '#E9ECEF' : '#FFF'};
+	// @ts-ignore
+	background-color: ${(props) => props.isExpanded ? '#E9ECEF' : '#FFF'};
 
 	.explanation {
 		padding: 0.25rem;

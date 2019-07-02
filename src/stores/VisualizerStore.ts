@@ -1,7 +1,7 @@
 import { computed, observable, action } from 'mobx';
 import { CeasarCipherStep, CeasarCipher } from './CeasarCipher';
 import { Point, Dimension } from './Geometry';
-import { cryptoGlobals } from './Globals';
+import { RootStore } from './RootStore';
 
 
 interface CeasarComponentPosition {
@@ -22,14 +22,11 @@ enum CeasarAnimationType {
 	OUTPUT = 'OUTPUT'
 }
 
-interface CeasarVisualizerStoreProps {
-	ceasarCipher: CeasarCipher;
-}
-
 class CeasarVisualizerStore {
 
 	private static readonly defaultFontSize: number = 16;
 	private static readonly animationStepsInIteration: number = 4;
+	private readonly rootStore: RootStore;
 
 	@observable ceasarCipher: CeasarCipher;
 	@observable steps: CeasarCipherStep[] = [];
@@ -37,8 +34,9 @@ class CeasarVisualizerStore {
 	@observable private animationIndex: number = 0;
 	@observable isShowingExplanation: boolean = true;
 
-	constructor(props: CeasarVisualizerStoreProps) {
-		this.ceasarCipher = props.ceasarCipher;
+	constructor(rootStore: RootStore) {
+		this.rootStore = rootStore;
+		this.ceasarCipher = rootStore.algorithm as CeasarCipher;
 	}
 
 	@computed get isPlaying(): boolean {
@@ -130,8 +128,11 @@ class CeasarVisualizerStore {
 	}
 
 	@computed
-	get currentStep(): CeasarCipherStep {
-		return this.ceasarCipher.steps[this.relativeAnimationIndex];
+	get currentStep(): CeasarCipherStep | null {
+
+		return this.relativeAnimationIndex < this.ceasarCipher.steps.length
+			? this.ceasarCipher.steps[this.relativeAnimationIndex]
+			: null;
 	}
 
 	@computed
@@ -163,7 +164,7 @@ class CeasarVisualizerStore {
 				if (!this.canStepForward) {
 					this.stop();
 				}
-			}, cryptoGlobals.visualizerControlStore.animationDelay);
+			}, this.rootStore.visualizerControlStore.animationDelay);
 
 		}
 	}

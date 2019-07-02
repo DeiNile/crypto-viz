@@ -1,19 +1,21 @@
 import * as React from 'react';
-import { wrapWithMobx } from '../../../utils/wrapWithMobx';
-import { CeasarCipherStep } from '../../../stores/CeasarCipher';
-import { BoxedCharacterLine } from '../../../components/BoxedCharacterLine';
-import { cryptoGlobals } from '../../../stores/Globals';
+import { injectWithState } from '../../../utils/wrapWithMobx';
+import { CeasarCipherStep, CeasarCipher } from '../../../stores/CeasarCipher';
 import { StyledHighlighter } from '../../../components/Highlighter';
 import { CeasarAnimationType } from '../../../stores/VisualizerStore';
 import { Point, Dimension, Rectangle, Line, centerOuterRectangleAroundInner } from '../../../stores/Geometry';
 import { SvgLine } from '../../../components/SvgLine';
+import { Alphabet } from './Alphabet';
+import { ShiftedAlphabet } from './ShiftedAlphabet';
+import { GlobalState } from '../../../components/CryptoViz';
 
 interface CeasarCipherCanvasProps {
 	inputText: string | null;
 	outputText: string | null;
-	alphabet: string[];
-	shiftedAlphabet: string[];
 	steps: CeasarCipherStep[];
+	relativeAnimationIndex: number;
+	boxSize: Dimension;
+	animationStep: CeasarAnimationType;
 }
 
 interface CeasarCipherCanvasState {
@@ -40,11 +42,6 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 		y: 140
 	};
 
-	private readonly boxSize: Dimension = {
-		width: cryptoGlobals.visualizerStore.fontSize * 1.1,
-		height: cryptoGlobals.visualizerStore.fontSize * 1.1
-	};
-
 	constructor(props: CeasarCipherCanvasProps) {
 		super(props);
 
@@ -56,10 +53,8 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 
 	getHighlighterPosition(): Rectangle | null {
 
-		const { steps } = this.props;
+		const { steps, animationStep, relativeAnimationIndex, boxSize } = this.props;
 		const { inputTextElement, outputTextElement } = this.state;
-		const relativeAnimationIndex: number = cryptoGlobals.visualizerStore.relativeAnimationIndex;
-		const animationStep: CeasarAnimationType = cryptoGlobals.visualizerStore.animationStep;
 
 		if (inputTextElement === null || outputTextElement === null) {
 			return null;
@@ -73,19 +68,19 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 				return null;
 			}
 
-			return centerOuterRectangleAroundInner(charPosition, {x: 0, y: 0, width: this.boxSize.width, height: this.boxSize.height});
+			return centerOuterRectangleAroundInner(charPosition, {x: 0, y: 0, width: boxSize.width, height: boxSize.height});
 		}
 		else if (animationStep === CeasarAnimationType.ALPHABET_START) {
 			return Object.assign({
-				x: this.boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x,
+				x: boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x,
 				y: this.alphabetPosition.y
-			}, this.boxSize);
+			}, boxSize);
 		}
 		else if (animationStep === CeasarAnimationType.ALPHABET_END) {
 			return Object.assign({
-				x: this.boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x,
+				x: boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x,
 				y: this.shiftedAlphabetPosition.y
-			}, this.boxSize);
+			}, boxSize);
 		}
 		else {
 			const charPosition: DOMRect | undefined = outputTextElement.getExtentOfChar(relativeAnimationIndex);
@@ -94,25 +89,24 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 				return null;
 			}
 
-			return centerOuterRectangleAroundInner(charPosition, {x: 0, y: 0, width: this.boxSize.width, height: this.boxSize.height});
+			return centerOuterRectangleAroundInner(charPosition, {x: 0, y: 0, width: boxSize.width, height: boxSize.height});
 		}
 	}
 
 	getCurrentLine(): Line | null {
 
 		const { inputTextElement, outputTextElement } = this.state;
-		const { steps } = this.props;
+		const { steps, relativeAnimationIndex, boxSize } = this.props;
 
 		if (inputTextElement !== null && outputTextElement !== null) {
-			const relativeAnimationIndex: number = cryptoGlobals.visualizerStore.relativeAnimationIndex;
 
 			return {
 				startPoint: {
-					x: this.boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x + this.boxSize.width / 2,
-					y: this.alphabetPosition.y + this.boxSize.height + 5
+					x: boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x + boxSize.width / 2,
+					y: this.alphabetPosition.y + boxSize.height + 5
 				},
 				endPoint: {
-					x: this.boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x + this.boxSize.width / 2,
+					x: boxSize.width * steps[relativeAnimationIndex].inputTextAlphabetIndex + this.alphabetPosition.x + boxSize.width / 2,
 					y: this.shiftedAlphabetPosition.y - 5
 				}
 			};
@@ -123,7 +117,7 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 
 	render() {
 
-		const { inputText, outputText, alphabet, shiftedAlphabet } = this.props;
+		const { inputText, outputText } = this.props;
 
 		if (inputText === null || outputText === null) {
 			return <svg width='640' height='360' />;
@@ -162,18 +156,14 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 					{inputText}
 				</text>
 
-				<BoxedCharacterLine
+				<Alphabet
 					x={this.alphabetPosition.x}
 					y={this.alphabetPosition.y}
-					characters={alphabet}
-					boxSize={this.boxSize}
 				/>
 
-				<BoxedCharacterLine
+				<ShiftedAlphabet
 					x={this.shiftedAlphabetPosition.x}
 					y={this.shiftedAlphabetPosition.y}
-					characters={shiftedAlphabet}
-					boxSize={this.boxSize}
 				/>
 
 				<text
@@ -200,7 +190,6 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 								y={highligherPosition.y}
 								width={highligherPosition.width}
 								height={highligherPosition.height}
-								animationSpeed={cryptoGlobals.visualizerControlStore.animationSpeedInMs}
 							/>
 						)
 				}
@@ -221,7 +210,24 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 	}
 }
 
-const CeasarCipherCanvas = wrapWithMobx<CeasarCipherCanvasProps>(BaseCeasarCipherCanvas, 'CeasarCipherCanvas');
+type InjectedCaesarCipherCanvasProps = CeasarCipherCanvasProps;
+interface StatefulCaesarCipherCanvasProps {}
+
+function stateInjector({rootStore}: GlobalState): InjectedCaesarCipherCanvasProps {
+	return {
+		inputText: rootStore.algorithm.inputText,
+		outputText: rootStore.algorithm.outputText,
+		steps: (rootStore.algorithm as CeasarCipher).steps,
+		relativeAnimationIndex: rootStore.visualizerStore.relativeAnimationIndex,
+		animationStep: rootStore.visualizerStore.animationStep,
+		boxSize: {
+			width: rootStore.visualizerStore.fontSize * 1.1,
+			height: rootStore.visualizerStore.fontSize * 1.1
+		}
+	};
+}
+
+const CeasarCipherCanvas = injectWithState<StatefulCaesarCipherCanvasProps>(stateInjector, BaseCeasarCipherCanvas, 'CeasarCipherCanvas');
 
 export {
 	CeasarCipherCanvas

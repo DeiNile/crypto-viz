@@ -1,20 +1,33 @@
 import * as React from 'react';
 import { Header } from './Header';
-import { InputPanel } from './InputPanel';
-import { StyledVisualizer } from './Visualizer';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
+import { AlgorithmSelctor } from './AlgorithmSelector';
+import { RootStore } from '../stores/RootStore';
+import { ModuleWrapper } from './Module';
+import { Provider } from 'mobx-react';
+
+interface GlobalState {
+	rootStore: RootStore;
+}
 
 interface CryptoVizProps {
 }
 
+const rootStore = new RootStore();
+// @ts-ignore Adding the global state to the window for debugging
+window.rootStore = rootStore;
 
 const BaseCryptoViz: React.SFC<CryptoVizProps> = (props: CryptoVizProps) => {
 
 	return (
 		<div>
-			<Header />
-			<InputPanel />
-			<StyledVisualizer />
+			<Provider rootStore={rootStore}>
+				<div>
+					<Header />
+					<AlgorithmSelctor />
+					<ModuleWrapper currentModule={rootStore.moduleStore.currentModule} />
+				</div>
+			</Provider>
 		</div>
 	);
 };
@@ -22,5 +35,6 @@ const BaseCryptoViz: React.SFC<CryptoVizProps> = (props: CryptoVizProps) => {
 const CryptoViz = wrapWithMobx<CryptoVizProps>(BaseCryptoViz, 'CryptoViz');
 
 export {
-	CryptoViz
+	CryptoViz,
+	GlobalState
 };
