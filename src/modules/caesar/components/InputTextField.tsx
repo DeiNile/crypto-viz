@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyledInputField } from '../../../components/InputField';
+import { InputField } from '../../../components/InputField';
 import { injectWithState } from '../../../utils/wrapWithMobx';
 import { GlobalState } from '../../../components/CryptoViz';
 
@@ -15,7 +15,7 @@ const BaseInputTextField: React.SFC<InputTextFieldProps> = (props: InputTextFiel
 	const { placeholder, showErrors, error, setText } = props;
 
 	return (
-		<StyledInputField
+		<InputField
 			placeholder={placeholder}
 			showErrors={showErrors}
 			error={error}

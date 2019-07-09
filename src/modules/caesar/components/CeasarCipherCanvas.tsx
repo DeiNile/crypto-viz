@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { injectWithState } from '../../../utils/wrapWithMobx';
-import { CeasarCipherStep, CeasarCipher } from '../../../stores/CeasarCipher';
-import { StyledHighlighter } from '../../../components/Highlighter';
-import { CeasarAnimationType } from '../../../stores/VisualizerStore';
+import { CeasarCipherStep, CeasarCipher } from '../stores/CeasarCipher';
+import { Highlighter } from '../../../components/Highlighter';
+import { CeasarAnimationType } from '../stores/VisualizerStore';
 import { Point, Dimension, Rectangle, Line, centerOuterRectangleAroundInner } from '../../../stores/Geometry';
 import { SvgLine } from '../../../components/SvgLine';
 import { Alphabet } from './Alphabet';
@@ -185,7 +185,7 @@ class BaseCeasarCipherCanvas extends React.Component<CeasarCipherCanvasProps, Ce
 					highligherPosition === null
 						? null
 						: (
-							<StyledHighlighter
+							<Highlighter
 								x={highligherPosition.x}
 								y={highligherPosition.y}
 								width={highligherPosition.width}

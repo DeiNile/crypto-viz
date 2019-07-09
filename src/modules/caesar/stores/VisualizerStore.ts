@@ -1,7 +1,7 @@
 import { computed, observable, action } from 'mobx';
 import { CeasarCipherStep, CeasarCipher } from './CeasarCipher';
-import { Point, Dimension } from './Geometry';
-import { RootStore } from './RootStore';
+import { Point, Dimension } from '../../../stores/Geometry';
+import { RootStore } from '../../../stores/RootStore';
 
 
 interface CeasarComponentPosition {

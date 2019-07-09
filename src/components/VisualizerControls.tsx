@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
-import { StyledButton } from '../styled-components/StyledButton';
 import { SpeedSelector } from './SpeedSelector';
+import { TextButton } from './TextButton';
 
 interface VisualizerControlsProps {
 	isPlaying: boolean;
@@ -19,27 +19,12 @@ const BaseVisualizerControls: React.SFC<VisualizerControlsProps> = (props: Visua
 
 	return (
 		<div>
-			<StyledButton onClick={back} disabled={!canBack} >
-				Back
-			</StyledButton>
-
-			{
-				!isPlaying
-					? (
-						<StyledButton disabled={!canPlay} onClick={play} >
-							Play
-						</StyledButton>
-					)
-					: (
-						<StyledButton onClick={stop} >
-							Stop
-						</StyledButton>
-					)
+			<TextButton text='Back' onClick={back} isEnabled={canBack} />
+			{!isPlaying
+				? <TextButton text='Play' onClick={play} isEnabled={canPlay} />
+				: <TextButton text='Stop' onClick={stop} isEnabled={true} />
 			}
-
-			<StyledButton onClick={next} disabled={!canNext} >
-				Next
-			</StyledButton>
+			<TextButton text='Next' onClick={next} isEnabled={canNext} />
 			<SpeedSelector
 				isEnabled={canNext || canBack}
 			/>

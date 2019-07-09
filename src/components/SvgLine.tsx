@@ -1,6 +1,6 @@
+import '../styles/SvgLine.scss';
 import * as React from 'react';
 import { Point } from '../stores/Geometry';
-import { StyledLine } from '../styled-components/StyledLine';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 
 function wrapId(id: string | undefined): string | undefined {
@@ -24,7 +24,7 @@ const BaseSvgLine: React.SFC<SvgLineDataProps> = (props: SvgLineProps) => {
 	const { startPoint, endPoint, startMarkerId, endMarkerId, midMarkerId } = props;
 
 	return (
-		<StyledLine
+		<line className='svg-line'
 			x1={startPoint.x}
 			y1={startPoint.y}
 			x2={endPoint.x}
@@ -37,14 +37,6 @@ const BaseSvgLine: React.SFC<SvgLineDataProps> = (props: SvgLineProps) => {
 };
 
 const SvgLine = wrapWithMobx<SvgLineProps>(BaseSvgLine, 'SvgLine');
-
-// const StyledSvgLine = styled(SvgLine)`
-// 	transition: transform 500ms ease-in-out;
-// 	transform: translate(
-// 		${(props) => props.x},
-// 		${(props) => props.y}
-// 	);
-// `;
 
 export {
 	SvgLine

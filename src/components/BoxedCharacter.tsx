@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
-// import { StyledSvgText } from './SvgText';
 import { SvgCharacter } from './SvgCharacter';
 import { Point, Rectangle, centerInnerRectangleInsideOuter } from '../stores/Geometry';
 

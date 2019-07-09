@@ -1,12 +1,8 @@
-import { EncryptionAlgorithm } from './EncryptionAlgorithm';
+import { EncryptionAlgorithm, ACTION_TYPE } from '../../../stores/EncryptionAlgorithm';
 import { observable, action, computed } from 'mobx';
-import { modulo } from '../utils/modulo';
-import { RootStore } from './RootStore';
+import { modulo } from '../../../utils/modulo';
+import { RootStore } from '../../../stores/RootStore';
 
-enum ACTION_TYPE {
-	ENCRYPT = 'ENCRYPT',
-	DECRYPT = 'DECRYPT'
-}
 
 interface CeasarCipherStep {
 	inputTextIndex: number;
@@ -96,11 +92,6 @@ class CeasarCipher extends EncryptionAlgorithm {
 	*/
 
 	@action.bound
-	setlastAction(lastAction: ACTION_TYPE): void {
-		this.lastAction = lastAction;
-	}
-
-	@action.bound
 	encrypt(): void {
 
 		if (this.isValid && this.proposedInputText !== null) {
@@ -168,16 +159,6 @@ class CeasarCipher extends EncryptionAlgorithm {
 
 			this.setSteps(newSteps);
 		}
-	}
-
-	@action.bound
-	setInputText(inputText: string): void {
-		this.proposedInputText = inputText;
-	}
-
-	@action.bound
-	private setSteps(steps: CeasarCipherStep[]): void {
-		this.steps = steps;
 	}
 
 	/*

@@ -1,15 +1,13 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { injectWithState } from '../../../utils/wrapWithMobx';
-import { CeasarAnimationType } from '../../../stores/VisualizerStore';
-import { StyledExplanationCollapser } from '../../../styled-components/StyledExplanationCollapser';
-import { StyledExplanationExpander } from '../../../styled-components/StyledExplanationExpander';
-import { CeasarCipherStep, CeasarCipher, ACTION_TYPE } from '../../../stores/CeasarCipher';
+import { CeasarAnimationType } from '../stores/VisualizerStore';
+import { CeasarCipherStep, CeasarCipher, ACTION_TYPE } from '../stores/CeasarCipher';
 import { GlobalState } from '../../../components/CryptoViz';
+import { ExplanationCollapser } from '../../../components/ExplanationCollapser';
+import { ExplanationExpander } from '../../../components/ExplanationExpander';
 
 
 interface CaesarExplanationDatProps {
-	className?: string;
 	currentStep: CeasarCipherStep | null;
 	animationStep: CeasarAnimationType;
 	shiftAmount: number;
@@ -103,7 +101,7 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 	}
 
 	render() {
-		const { isExpanded, isExplanationTextVisible, className, isVisible } = this.props;
+		const { isExpanded, isExplanationTextVisible, isVisible } = this.props;
 
 		if (!isVisible) {
 			return null;
@@ -111,8 +109,8 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 
 		if (isExpanded) {
 			return (
-				<div className={className}>
-					<StyledExplanationCollapser text='Hide Walkthrough' collapse={this.collapse} />
+				<div className='caesar-explanation'>
+					<ExplanationCollapser text='Hide Walkthrough' collapse={this.collapse} />
 					{
 						!isExplanationTextVisible
 							? null
@@ -123,8 +121,8 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 		}
 
 		return (
-			<div className={className}>
-				<StyledExplanationExpander text='Show Walkthrough' expand={this.expand} />
+			<div className='caesar-explanation'>
+				<ExplanationExpander text='Show Walkthrough' expand={this.expand} />
 			</div>
 		);
 	}
@@ -147,18 +145,6 @@ interface StatefulCaesarExplanation {}
 
 const CaesarExplanation = injectWithState<StatefulCaesarExplanation>(stateInjector, BaseCaesarExplanation, 'CaesarExplanation');
 
-const StyledCaesarExplanation = styled(CaesarExplanation)`
-	// @ts-ignore
-	background-color: ${(props) => props.isExpanded ? '#E9ECEF' : '#FFF'};
-
-	.explanation {
-		padding: 0.25rem;
-		color: #212529;
-		line-height: 1.35rem;
-	}
-`;
-
 export {
-	CaesarExplanation,
-	StyledCaesarExplanation
+	CaesarExplanation
 };

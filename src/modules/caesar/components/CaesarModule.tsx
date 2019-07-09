@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { wrapWithMobx } from '../../../utils/wrapWithMobx';
 import { InputPanel } from '../../../components/InputPanel';
-import { StyledVisualizer } from './Visualizer';
+import { Visualizer } from './Visualizer';
 
 interface BaseCaesarModuleProps {
 
@@ -11,7 +11,7 @@ const BaseCaesarModule: React.SFC<BaseCaesarModuleProps>= (props: BaseCaesarModu
 	return (
 		<div className='caesar-module'>
 			<InputPanel />
-			<StyledVisualizer />
+			<Visualizer />
 		</div>
 	);
 };

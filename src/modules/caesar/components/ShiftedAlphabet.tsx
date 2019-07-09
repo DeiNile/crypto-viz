@@ -1,5 +1,5 @@
 import { BoxedCharacterLineProps, BoxedCharacterLine } from '../../../components/BoxedCharacterLine';
-import { CeasarCipher } from '../../../stores/CeasarCipher';
+import { CeasarCipher } from '../stores/CeasarCipher';
 import { injectWithState } from '../../../utils/wrapWithMobx';
 import { GlobalState } from '../../../components/CryptoViz';
 

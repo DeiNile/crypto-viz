@@ -1,12 +1,9 @@
+import '../styles/InputField.scss';
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 import { ErrorMessage } from './ErrorMessage';
-import styled from 'styled-components';
-import { StyledInput } from '../styled-components/StyledInput';
-// import { StyledInput } from '../styled-components/StyledInput';
 
 interface InputFieldProps {
-	className?: string;
 	placeholder?: string;
 	showErrors: boolean;
 	error: string | null;
@@ -29,7 +26,7 @@ class BaseInputField extends React.Component<InputFieldProps> {
 	}
 
 	render() {
-		const { showErrors, error, className, placeholder } = this.props;
+		const { showErrors, error,  placeholder } = this.props;
 
 		const canShowError: boolean = showErrors && error !== null && error.length > 0;
 		const effectivePlaceholder: string = (placeholder !== undefined)
@@ -37,8 +34,8 @@ class BaseInputField extends React.Component<InputFieldProps> {
 			: '';
 
 		return (
-			<div className={className}>
-				<StyledInput onChange={this.onChange} placeholder={effectivePlaceholder} />
+			<div className='input-field-with-error'>
+				<input className='input-field' onChange={this.onChange} placeholder={effectivePlaceholder} />
 				{
 					!canShowError
 						? null
@@ -54,18 +51,6 @@ class BaseInputField extends React.Component<InputFieldProps> {
 
 const InputField = wrapWithMobx<InputFieldProps>(BaseInputField, 'InputField');
 
-const StyledInputField = styled(InputField)`
-	display: flex;
-	flex-direction: column;
-	margin: 0.25rem 0;
-
-	/* Apply margin to all children */
-	* {
-		margin: 0.25rem 0;
-	}
-`;
-
 export {
-	InputField,
-	StyledInputField
+	InputField
 };

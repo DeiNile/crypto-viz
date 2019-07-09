@@ -1,10 +1,8 @@
+import '../styles/SvgText.scss';
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
-import styled from 'styled-components';
 
 interface BaseSvgTextProps {
-	className?: string;
-
 	text: string;
 	x: number;
 	y: number;
@@ -13,19 +11,15 @@ interface BaseSvgTextProps {
 type SvgTextProps = BaseSvgTextProps;
 
 const BaseSvgText: React.SFC<SvgTextProps> = (props: SvgTextProps) => {
-	const { text, x, y, className } = props;
+	const { text, x, y } = props;
 
-	return <text className={className} transform={`translate(${x}, ${y})`} >{text}</text>;
+	return <text className='svg-text' transform={`translate(${x}, ${y})`} >{text}</text>;
 };
 
 const SvgText = wrapWithMobx<SvgTextProps>(BaseSvgText, 'SvgText');
 
-const StyledSvgText = styled(SvgText)`
-	dominant-baseline: hanging;
-`;
 
 export {
 	SvgTextProps,
-	SvgText,
-	StyledSvgText
+	SvgText
 };

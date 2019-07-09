@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { injectWithState } from '../utils/wrapWithMobx';
-import styled from 'styled-components';
 import { GlobalState } from './CryptoViz';
 
 interface HighlighterProps {
-	className?: string;
 	x: number;
 	y: number;
 	width: string | number;
@@ -16,14 +14,18 @@ interface HighlighterProps {
 const DEFAULT_BORDER_COLOR: string = 'red';
 
 const BaseHighlighter: React.SFC<HighlighterProps> = (props: HighlighterProps) => {
-	const {x, y, width, height, borderColor, className} = props;
+	const {x, y, width, height, borderColor, animationSpeed } = props;
 
 	const effectiveBorderColor: string = borderColor === undefined
 		? DEFAULT_BORDER_COLOR
 		: borderColor;
 
+	const speed: number = animationSpeed !== undefined
+		? animationSpeed
+		: 500;
+
 	return (
-		<g className={className} transform={`translate(${x}, ${y})`} >
+		<g className='svg-highlighter' transform={`translate(${x}, ${y})`} style={{transition: `${speed}ms ease-in-out`}} >
 			<rect
 				width={width}
 				height={height}
@@ -45,21 +47,6 @@ function stateInjector({rootStore}: GlobalState): InjectedHighlighterProps {
 
 const Highlighter = injectWithState<StateFulHighlighterProps>(stateInjector, BaseHighlighter, 'Highlighter');
 
-const StyledHighlighter = styled(Highlighter)`
-	transition: transform ${(props) => {
-		// @ts-ignore
-		return props.animationSpeed !== undefined
-		// @ts-ignore
-			? props.animationSpeed
-			: 500;
-	}}ms ease-in-out;
-	transform: translate(
-		${(props) => props.x},
-		${(props) => props.y}
-	);
-`;
-
 export {
-	Highlighter,
-	StyledHighlighter
+	Highlighter
 };

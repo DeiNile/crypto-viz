@@ -1,0 +1,18 @@
+
+.caesar-visualizer {
+
+	display: flex;
+	flex-direction: row;
+
+	.canvas {
+		display: flex;
+		flex-direction: column;
+		flex: 3 1 auto;
+	}
+
+	.algorithm-explanation {
+		display: flex;
+		flex: 1 1 auto;
+		justify-content: flex-end;
+	}
+}

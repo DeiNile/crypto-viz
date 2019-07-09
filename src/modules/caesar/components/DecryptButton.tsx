@@ -1,26 +1,11 @@
-import * as React from 'react';
 import { injectWithState } from '../../../utils/wrapWithMobx';
-import { StyledButton } from '../../../styled-components/StyledButton';
 import { GlobalState } from '../../../components/CryptoViz';
+import { TextButtonProps, BaseTextButton } from '../../../components/TextButton';
 
-interface DecryptButtonProps {
-	isDisabled: boolean;
-	onClick(): void;
-}
-
-const BaseDecryptButton: React.SFC<DecryptButtonProps> = (props: DecryptButtonProps) => {
-	const { isDisabled, onClick } = props;
-
-	return (
-		<StyledButton disabled={isDisabled} onClick={onClick}>
-			Decrypt
-		</StyledButton>
-	);
-};
-
-function stateInjector({rootStore}: GlobalState): DecryptButtonProps {
+function stateInjector({rootStore}: GlobalState): TextButtonProps {
 	return {
-		isDisabled: !rootStore.algorithm.isValid,
+		text: 'Decrypt',
+		isEnabled: rootStore.algorithm.isValid,
 		onClick: () => {
 			rootStore.visualizerStore.resetHighlighter();
 			rootStore.algorithm.decrypt();
@@ -30,7 +15,7 @@ function stateInjector({rootStore}: GlobalState): DecryptButtonProps {
 
 interface StatefulDecryptButtonProps {}
 
-const DecryptButton = injectWithState<StatefulDecryptButtonProps>(stateInjector, BaseDecryptButton, 'DecryptButton');
+const DecryptButton = injectWithState<StatefulDecryptButtonProps>(stateInjector, BaseTextButton, 'DecryptButton');
 
 export {
 	DecryptButton

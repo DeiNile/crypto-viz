@@ -1,5 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 console.log(__dirname);
 
@@ -25,10 +28,20 @@ module.exports = {
 			test: /\.js$/,
 			loader: 'source-map-loader'
 		}, {
-			test: /\.css$/,
+			test: /\.s(a|c)ss$/,
+			exclude: /node_modules/,
 			use: [
-				'style-loader',
-				'css-loader'
+				// MiniCssExtractPlugin.loader,
+				isDevelopment ?  'style-loader' : MiniCssExtractPlugin.loader,
+				// 'style-loader',
+				'css-loader',
+				// 'postcss-loader',
+				{
+					loader: 'sass-loader',
+					options: {
+						sourceMap: true
+					}
+				}
 			]
 		}, {
 			test: /\.(ts|tsx)$/,
@@ -51,7 +64,10 @@ module.exports = {
 		extensions: [
 			".tsx",
 			".ts",
-			".js"
+			".js",
+			".scss",
+			".sass",
+			".css"
 		]
 	},
 	devServer: {
@@ -64,10 +80,9 @@ module.exports = {
 		  jQuery: "jquery",
 		  "window.jQuery": "jquery'",
 		  "window.$": "jquery"
+	  }),
+	  new MiniCssExtractPlugin({
+		  filename: 'bundle.css',
 	  })
 	]
-	// externals: {
-    //     react: 'React',
-    //     'react-dom': 'ReactDOM'
-    // }
 };

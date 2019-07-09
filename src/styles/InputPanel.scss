@@ -1,0 +1,13 @@
+
+.input-panel {
+
+	& > .button-cluster {
+		display: flex;
+		flex-direction: row;
+
+		* {
+			margin: 0 0.2rem;
+		}
+	}
+
+}

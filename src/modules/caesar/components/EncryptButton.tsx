@@ -1,26 +1,12 @@
-import * as React from 'react';
 import { injectWithState } from '../../../utils/wrapWithMobx';
-import { StyledButton } from '../../../styled-components/StyledButton';
 import { GlobalState } from '../../../components/CryptoViz';
+import { BaseTextButton, TextButtonProps } from '../../../components/TextButton';
 
-interface EncryptButtonProps {
-	isDisabled: boolean;
-	onClick(): void;
-}
 
-const BaseEncryptButton: React.SFC<EncryptButtonProps> = (props: EncryptButtonProps) => {
-	const { isDisabled, onClick } = props;
-
-	return (
-		<StyledButton disabled={isDisabled} onClick={onClick}>
-			Encrypt
-		</StyledButton>
-	);
-};
-
-function stateInjector({rootStore}: GlobalState): EncryptButtonProps {
+function stateInjector({rootStore}: GlobalState): TextButtonProps {
 	return {
-		isDisabled: !rootStore.algorithm.isValid,
+		text: 'Encrypt',
+		isEnabled: rootStore.algorithm.isValid,
 		onClick: () => {
 			rootStore.visualizerStore.resetHighlighter();
 			rootStore.algorithm.encrypt();
@@ -30,7 +16,7 @@ function stateInjector({rootStore}: GlobalState): EncryptButtonProps {
 
 interface StatefulEncryptButtonProps {}
 
-const EncryptButton = injectWithState<StatefulEncryptButtonProps>(stateInjector, BaseEncryptButton, 'EncryptButton');
+const EncryptButton = injectWithState<StatefulEncryptButtonProps>(stateInjector, BaseTextButton, 'EncryptButton');
 
 export {
 	EncryptButton
