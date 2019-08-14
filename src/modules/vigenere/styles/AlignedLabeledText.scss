@@ -1,0 +1,33 @@
+@import './VigenereVars.scss';
+
+.aligned-labeled-text {
+	display: grid;
+	grid-template-columns: max-content max-content;
+	grid-gap: 0.5rem;
+	margin-top: 0.5rem;
+
+	label {
+		text-align: right;
+		color: #555;
+	}
+
+	span {
+		color: black;
+		font-family: monospace, monospace;
+	}
+
+	mark {
+
+		&.input-highlight {
+			background-color: $input-highlight-color;
+		}
+
+		&.keyword-highlight {
+			background-color: $keyword-highlight-color;
+		}
+
+		&.output-highlight {
+			background-color: $output-highlight-color;
+		}
+	}
+}

@@ -39,6 +39,10 @@ class CeasarVisualizerStore {
 		this.ceasarCipher = rootStore.algorithm as CeasarCipher;
 	}
 
+	@computed get hasSteps(): boolean {
+		return this.steps.length > 0;
+	}
+
 	@computed get isPlaying(): boolean {
 		return this.timeout !== null;
 	}

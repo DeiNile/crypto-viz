@@ -28,7 +28,7 @@ class CeasarCipher extends EncryptionAlgorithm {
 
 	@observable shiftAmount: number = 5;
 	@observable lastAction: ACTION_TYPE | null = null;
-	@observable proposedInputText: string | null = null;
+	@observable proposedInputText: string = '';
 	@observable inputText: string | null = null;
 	@observable outputText: string | null = null;
 	@observable steps: CeasarCipherStep[] = [];

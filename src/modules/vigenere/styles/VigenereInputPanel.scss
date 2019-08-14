@@ -1,0 +1,27 @@
+
+.vigenere-input-panel {
+	.input-text-fields {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		margin: 0 auto;
+
+		.vigenere-input-field {
+			width: 50%;
+			padding-right: 0.25rem;
+		}
+		.vigenere-keyword-field {
+			width: 50%;
+			padding-left: 0.25rem;
+		}
+	}
+
+	.vigenere-button-cluser {
+		.vigenere-encrypt-button {
+			margin-right: 0.25rem;
+		}
+		.vigenere-decrypt-button {
+			margin-left: 0.25rem;
+		}
+	}
+}

@@ -4,6 +4,7 @@ import { GlobalState } from '../../../components/CryptoViz';
 
 function stateInjector({rootStore}: GlobalState): VisualizerControlsProps {
 	return {
+		isVisible: rootStore.visualizerStore.hasSteps,
 		isPlaying: rootStore.visualizerStore.isPlaying,
 		canPlay: rootStore.visualizerStore.canPlay,
 		canNext: rootStore.visualizerStore.canStepForward,

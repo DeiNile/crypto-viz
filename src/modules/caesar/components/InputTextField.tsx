@@ -1,32 +1,12 @@
-import * as React from 'react';
-import { InputField } from '../../../components/InputField';
+import { InputField, InputFieldProps } from '../../../components/InputField';
 import { injectWithState } from '../../../utils/wrapWithMobx';
 import { GlobalState } from '../../../components/CryptoViz';
 
-interface InputTextFieldProps {
-	placeholder?: string;
-	showErrors: boolean;
-	error: string | null;
-
-	setText(text: string): void;
-}
-
-const BaseInputTextField: React.SFC<InputTextFieldProps> = (props: InputTextFieldProps) => {
-	const { placeholder, showErrors, error, setText } = props;
-
-	return (
-		<InputField
-			placeholder={placeholder}
-			showErrors={showErrors}
-			error={error}
-			setText={setText}
-		/>
-	);
-};
-
-function stateInjector({rootStore}: GlobalState): InputTextFieldProps {
+function stateInjector({rootStore}: GlobalState): InputFieldProps {
 	return {
+		value: rootStore.algorithm.proposedInputText,
 		placeholder: 'Ciphertext / Plaintext',
+		classNamePrefix: 'caesar-input-field',
 		showErrors: !rootStore.algorithm.isValid,
 		error: rootStore.algorithm.errorMessage,
 		setText: rootStore.algorithm.setInputText
@@ -35,7 +15,7 @@ function stateInjector({rootStore}: GlobalState): InputTextFieldProps {
 
 interface StatefulInputTextFieldProps {}
 
-const InputTextField = injectWithState<StatefulInputTextFieldProps>(stateInjector, BaseInputTextField, 'InputTextField');
+const InputTextField = injectWithState<StatefulInputTextFieldProps>(stateInjector, InputField, 'InputTextField');
 
 export {
 	InputTextField

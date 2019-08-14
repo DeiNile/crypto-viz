@@ -1,8 +1,12 @@
 
 
-function safeGet<T>(getter: () => T, fallback: T): T {
+function safeGet<T, F>(getter: () => T, fallback: T | F, fallbackOnNullUndefined: boolean = false): T | F {
 	try {
-		return getter();
+		const value: T = getter();
+
+		return fallbackOnNullUndefined && (value === null || value === undefined)
+			? fallback
+			: value;
 	}
 	catch (exception) {
 		return fallback;

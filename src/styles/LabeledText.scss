@@ -1,0 +1,25 @@
+
+.labeled-text {
+
+	&.WEST {
+		display: grid;
+		grid-template-columns: max-content max-content;
+		grid-gap: 0.5rem;
+
+		.label {
+			text-align: right;
+		}
+	}
+
+	&.NORTH {
+		display: block;
+	}
+
+	.label {
+		color: #5a6268;
+	}
+
+	.text {
+		color: black;
+	}
+}

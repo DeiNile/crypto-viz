@@ -1,9 +1,11 @@
+import '../styles/VisualizerControls.scss';
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 import { SpeedSelector } from './SpeedSelector';
 import { TextButton } from './TextButton';
 
 interface VisualizerControlsProps {
+	isVisible: boolean;
 	isPlaying: boolean;
 	canPlay: boolean;
 	canNext: boolean;
@@ -15,16 +17,20 @@ interface VisualizerControlsProps {
 }
 
 const BaseVisualizerControls: React.SFC<VisualizerControlsProps> = (props: VisualizerControlsProps) => {
-	const { isPlaying, canNext, canBack, canPlay, next, back, play, stop } = props;
+	const { isPlaying, canNext, canBack, canPlay, next, back, play, stop, isVisible } = props;
+
+	if (!isVisible) {
+		return null;
+	}
 
 	return (
-		<div>
-			<TextButton text='Back' onClick={back} isEnabled={canBack} />
+		<div className='visualizer-controls'>
+			<TextButton text='Back' onClick={back} isEnabled={canBack} classNamePrefix='visualizer-control' />
 			{!isPlaying
-				? <TextButton text='Play' onClick={play} isEnabled={canPlay} />
-				: <TextButton text='Stop' onClick={stop} isEnabled={true} />
+				? <TextButton text='Play' onClick={play} isEnabled={canPlay} classNamePrefix='visualizer-control' />
+				: <TextButton text='Stop' onClick={stop} isEnabled={true} classNamePrefix='visualizer-control' />
 			}
-			<TextButton text='Next' onClick={next} isEnabled={canNext} />
+			<TextButton text='Next' onClick={next} isEnabled={canNext} classNamePrefix='visualizer-control' />
 			<SpeedSelector
 				isEnabled={canNext || canBack}
 			/>

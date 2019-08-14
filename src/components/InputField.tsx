@@ -2,11 +2,15 @@ import '../styles/InputField.scss';
 import * as React from 'react';
 import { wrapWithMobx } from '../utils/wrapWithMobx';
 import { ErrorMessage } from './ErrorMessage';
+import { WarningMessage } from './WarningMessage';
 
 interface InputFieldProps {
+	classNamePrefix: string;
+	value: string;
 	placeholder?: string;
 	showErrors: boolean;
 	error: string | null;
+	warning?: string;
 	setText(text: string): void;
 }
 
@@ -26,7 +30,7 @@ class BaseInputField extends React.Component<InputFieldProps> {
 	}
 
 	render() {
-		const { showErrors, error,  placeholder } = this.props;
+		const { classNamePrefix, showErrors, error, warning, placeholder, value } = this.props;
 
 		const canShowError: boolean = showErrors && error !== null && error.length > 0;
 		const effectivePlaceholder: string = (placeholder !== undefined)
@@ -34,14 +38,15 @@ class BaseInputField extends React.Component<InputFieldProps> {
 			: '';
 
 		return (
-			<div className='input-field-with-error'>
-				<input className='input-field' onChange={this.onChange} placeholder={effectivePlaceholder} />
-				{
-					!canShowError
-						? null
-						: (
-							<ErrorMessage message={`* [${error as string}] are illegal characters`}/>
-						)
+			<div className={`${classNamePrefix} input-field-with-error`}>
+				<input className='input-field' onChange={this.onChange} placeholder={effectivePlaceholder} value={value} />
+				{!canShowError
+					? null
+					: <ErrorMessage message={`* [${error as string}] are illegal characters`} />
+				}
+				{!canShowError && warning !== undefined
+					? <WarningMessage message={warning} />
+					: null
 				}
 			</div>
 		);
@@ -52,5 +57,6 @@ class BaseInputField extends React.Component<InputFieldProps> {
 const InputField = wrapWithMobx<InputFieldProps>(BaseInputField, 'InputField');
 
 export {
-	InputField
+	InputField,
+	InputFieldProps
 };

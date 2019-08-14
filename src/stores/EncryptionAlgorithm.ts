@@ -1,4 +1,4 @@
-import { action } from 'mobx';
+import { action, computed } from 'mobx';
 
 enum ACTION_TYPE {
 	ENCRYPT = 'ENCRYPT',
@@ -7,7 +7,7 @@ enum ACTION_TYPE {
 
 abstract class EncryptionAlgorithm {
 	abstract lastAction: ACTION_TYPE | null;
-	abstract proposedInputText: string | null;
+	abstract proposedInputText: string;
 	abstract inputText: string | null;
 	abstract outputText: string | null;
 	abstract isValid: boolean;
@@ -17,6 +17,9 @@ abstract class EncryptionAlgorithm {
 	abstract encrypt(): void;
 	abstract decrypt(): void;
 
+	@computed get hasEncryptedDecrypted(): boolean {
+		return this.lastAction !== null;
+	}
 
 	@action.bound
 	setlastAction(lastAction: ACTION_TYPE): void {

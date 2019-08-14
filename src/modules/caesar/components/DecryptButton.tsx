@@ -5,6 +5,7 @@ import { TextButtonProps, BaseTextButton } from '../../../components/TextButton'
 function stateInjector({rootStore}: GlobalState): TextButtonProps {
 	return {
 		text: 'Decrypt',
+		classNamePrefix: 'caesar-button',
 		isEnabled: rootStore.algorithm.isValid,
 		onClick: () => {
 			rootStore.visualizerStore.resetHighlighter();
