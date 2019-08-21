@@ -4,6 +4,7 @@ import { injectWithState } from '../../../utils/wrapWithMobx';
 import { GlobalState } from '../../../components/CryptoViz';
 import { assertUninitializedVigenereCipher, assertUnitializedVigenereVisualizer } from '../utils/assertUnitializer';
 import { safeGet } from '../../../utils/safeget';
+import { ACTION_TYPE } from '../../caesar/stores/CeasarCipher';
 
 
 function highlightAt(value: string, className: string, i?: number) {
@@ -23,27 +24,35 @@ interface AlignedLabeledTextProps {
 	keyword: string | null;
 	inputText: string | null;
 	outputText: string | null;
+	cipherMode: ACTION_TYPE | null;
 	inputHighlightIndex?: number;
 	keywordHighlightIndex?: number;
 	outputHighlightIndex?: number;
 }
 
 const BaseAlignedLabeledText: React.SFC<AlignedLabeledTextProps> = (props: AlignedLabeledTextProps) => {
-	const { keyword, inputText, outputText, isVisible, inputHighlightIndex, keywordHighlightIndex, outputHighlightIndex } = props;
+	const { keyword, inputText, outputText, isVisible, inputHighlightIndex, keywordHighlightIndex, outputHighlightIndex, cipherMode } = props;
 
-	if (!isVisible || keyword === null || inputText === null || outputText === null) {
+	if (!isVisible || keyword === null || inputText === null || outputText === null || cipherMode === null) {
 		return null;
 	}
 
+	const inputDisplayName: string = cipherMode === ACTION_TYPE.ENCRYPT
+		? 'Plaintext'
+		: 'Ciphertext';
+	const outputDisplayName: string = cipherMode === ACTION_TYPE.ENCRYPT
+		? 'Ciphertext'
+		: 'Plaintext';
+
 	return (
 		<div className='aligned-labeled-text'>
-			<label>input:</label>
+			<label>{inputDisplayName}:</label>
 			{highlightAt(inputText, 'input-highlight', inputHighlightIndex)}
 
-			<label>keyword:</label>
+			<label>Keyword:</label>
 			{highlightAt(keyword, 'keyword-highlight', keywordHighlightIndex)}
 
-			<label>output:</label>
+			<label>{outputDisplayName}:</label>
 			{highlightAt(outputText, 'output-highlight', outputHighlightIndex)}
 		</div>
 	);
@@ -65,6 +74,7 @@ function stateInjector({rootStore}: GlobalState): AlignedLabeledTextProps {
 		inputText: rootStore.moduleStore.vigenereCipher.inputText,
 		keyword: rootStore.moduleStore.vigenereCipher.repeatedKeyword,
 		outputText: rootStore.moduleStore.vigenereCipher.outputText,
+		cipherMode: rootStore.moduleStore.vigenereCipher.lastAction,
 		inputHighlightIndex: safeGet<number, undefined>(
 			() => rootStore.moduleStore.vigenereVisualizerStore!.highlightedInputIndex!, undefined, true
 		),

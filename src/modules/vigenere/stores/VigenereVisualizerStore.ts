@@ -1,8 +1,10 @@
 import { VigenereCipherStep } from './VigenereCipher';
 import { observable, computed, action } from 'mobx';
+import { ordinalSuffix } from '../utils/ordinalSuffix';
+import { ACTION_TYPE } from '../../../stores/EncryptionAlgorithm';
 
 enum VigenereAnimationType {
-	INPUT_HIGHLIGHT = 'INPUT_HIGHLIGHT',
+	PREABMLE = 'PREAMBLE',
 	COLUMN_HIGHLIGHT = 'COLUMN_HIGHLIGHT',
 	ROW_HIGHLIGHT = 'ROW_HIGHLIGHT',
 	OUTPUT_HIGHLIGHT = 'OUTPUT_HIGHLIGHT'
@@ -10,8 +12,9 @@ enum VigenereAnimationType {
 
 class VigenereVisualizerStore {
 
-	readonly animationStepsInIteration: number = Object.keys(VigenereAnimationType).length;
+	readonly animationStepsInIteration: number = Object.keys(VigenereAnimationType).length - 1;
 
+	@observable lastAction: ACTION_TYPE | null = null;
 	@observable steps: VigenereCipherStep[] = [];
 	@observable timeout: number | null = null;
 	@observable animationIndex: number = 0;
@@ -34,7 +37,7 @@ class VigenereVisualizerStore {
 	}
 
 	@computed get canStepBackward(): boolean {
-		return this.animationIndex > 0;
+		return this.animationIndex > -1;
 	}
 
 	@computed get canPlay(): boolean {
@@ -42,19 +45,21 @@ class VigenereVisualizerStore {
 	}
 
 	@computed get currentAnimationIndex(): number {
-		return Math.floor(this.animationIndex / this.animationStepsInIteration);
+		return this.animationIndex === -1
+			? -1
+			: Math.floor(this.animationIndex / this.animationStepsInIteration);
 	}
 
 	@computed get animationStep(): VigenereAnimationType {
 		const animationIndexInStep: number = this.animationIndex % this.animationStepsInIteration;
 
-		if (animationIndexInStep === 0) {
-			return VigenereAnimationType.INPUT_HIGHLIGHT;
+		if (this.animationIndex === -1) {
+			return VigenereAnimationType.PREABMLE;
 		}
-		else if (animationIndexInStep === 1) {
+		else if (animationIndexInStep === 0) {
 			return VigenereAnimationType.COLUMN_HIGHLIGHT;
 		}
-		else if (animationIndexInStep === 2) {
+		else if (animationIndexInStep === 1) {
 			return VigenereAnimationType.ROW_HIGHLIGHT;
 		}
 		else {
@@ -63,25 +68,25 @@ class VigenereVisualizerStore {
 	}
 
 	@computed get currentStep(): VigenereCipherStep | null {
-		return this.hasSteps && this.currentAnimationIndex < this.steps.length
+		return this.hasSteps && this.currentAnimationIndex > 0 && this.currentAnimationIndex < this.steps.length
 			? this.steps[this.currentAnimationIndex]
 			: null;
 	}
 
 	@computed get highlightedColumn(): number | null {
 
-		if (this.animationStep !== VigenereAnimationType.INPUT_HIGHLIGHT) {
+		if (this.hasSteps && this.currentAnimationIndex >= 0) {
 			return this.steps[this.currentAnimationIndex].inputCharacterIndex;
 		}
 
 		return null;
 	}
 
-	@computed get highlighterRow(): number | null {
+	@computed get highlightedRow(): number | null {
 
 		if (
-			this.animationStep !== VigenereAnimationType.INPUT_HIGHLIGHT &&
-			this.animationStep !== VigenereAnimationType.COLUMN_HIGHLIGHT
+			this.animationStep === VigenereAnimationType.ROW_HIGHLIGHT ||
+			this.animationStep === VigenereAnimationType.OUTPUT_HIGHLIGHT
 		) {
 			return this.steps[this.currentAnimationIndex].keywordCharacterIndex;
 		}
@@ -90,6 +95,10 @@ class VigenereVisualizerStore {
 	}
 
 	@computed get highlightedInputIndex(): number | null {
+		if (this.animationStep === VigenereAnimationType.PREABMLE) {
+			return null;
+		}
+
 		return this.currentAnimationIndex;
 	}
 
@@ -114,7 +123,41 @@ class VigenereVisualizerStore {
 	}
 
 	@computed get currentText(): string | null {
-		return null;
+
+		if (!this.hasSteps || this.lastAction === null) {
+			return null;
+		}
+
+		if (this.animationStep === VigenereAnimationType.PREABMLE) {
+			const mode = this.lastAction === ACTION_TYPE.DECRYPT
+				? 'decryption'
+				: 'encryption';
+			const textType = this.lastAction === ACTION_TYPE.DECRYPT
+				? 'plaintext'
+				: 'ciphertext';
+
+			return `Before starting the ${mode} process, we must take take the keyword, and repeat it until its length match that of the ${textType}.
+
+Next, we must construct the Vigenere table. The first row of is the same as the alphabet. The next row shifts the alphabet one position to the left such that 'B' is in the first cell and 'A' is the last cell. Repeat this until you have 'Z' as the first cell of a row.`;
+		}
+		else if (this.animationStep === VigenereAnimationType.COLUMN_HIGHLIGHT) {
+			const textType = this.lastAction === ACTION_TYPE.ENCRYPT
+				? 'plaintext'
+				: 'ciphertext';
+
+			return `Take the ${ordinalSuffix(this.currentAnimationIndex + 1)} character of your ${textType} - ${this.steps[this.currentAnimationIndex].inputCharacter} - and find its column in the Vigenere table.`;
+		}
+		else if (this.animationStep === VigenereAnimationType.ROW_HIGHLIGHT) {
+			return `Take the ${ordinalSuffix(this.currentAnimationIndex + 1)} character of your keyword - ${this.steps[this.currentAnimationIndex].keywordCharacter} - and find its row in the Vigenere table.`;
+		}
+		else {
+
+			const textType = this.lastAction === ACTION_TYPE.DECRYPT
+				? 'plaintext'
+				: 'ciphertext';
+
+			return `Take the character where the highlighted row and column meet - ${this.steps[this.currentAnimationIndex].outputCharacter} - and append it to your ${textType}.`;
+		}
 	}
 
 
@@ -161,7 +204,12 @@ class VigenereVisualizerStore {
 	@action.bound
 	setSteps(steps: VigenereCipherStep[]): void {
 		this.steps = steps;
-		this.animationIndex = 0;
+		this.animationIndex = -1;
+	}
+
+	@action.bound
+	setLastActionType(newAction: ACTION_TYPE): void {
+		this.lastAction = newAction;
 	}
 
 	@action.bound

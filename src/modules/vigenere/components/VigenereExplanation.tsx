@@ -1,3 +1,4 @@
+import '../styles/VigenereExplanation.scss';
 import React from 'react';
 import { ExplanationCollapser } from '../../../components/ExplanationCollapser';
 import { ExplanationExpander } from '../../../components/ExplanationExpander';
@@ -22,9 +23,9 @@ const BaseVigenereExplanation: React.SFC<VigenereExplanationProps> = function (p
 	}
 	else if (isExpanded) {
 		return (
-			<div>
+			<div className='vigenere-explanation'>
 				<ExplanationCollapser text='Hide Walkthrough' collapse={collapse} />
-				{explanationText}
+				<div className='vigenere-explanation-text'>{explanationText}</div>
 			</div>
 		);
 	}

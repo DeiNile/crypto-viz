@@ -35,9 +35,12 @@ class VigenereCipher {
 		return table;
 	})();
 
-	@observable broadcastStepChange:(steps: VigenereCipherStep[]) => void = function () {
+	@observable broadcastStepChange:(steps: VigenereCipherStep[]) => void = () => {
 		console.warn('Default step broadcaster called');
-	};
+	}
+	@observable broadcastLastActionChange: (action: ACTION_TYPE) => void = () => {
+		console.log('Default last action broadcaster called');
+	}
 
 	@observable lastAction: ACTION_TYPE | null = null;
 	@observable proposedInputText: string = '';
@@ -151,7 +154,8 @@ class VigenereCipher {
 	encrypt(): void {
 		if (this.isValid && this.proposedInputText !== null && this.proposedKeyword !== null) {
 
-			this.setlastAction(ACTION_TYPE.ENCRYPT);
+			const lastAction: ACTION_TYPE = ACTION_TYPE.ENCRYPT;
+			this.setlastAction(lastAction);
 			this.inputText = this.proposedInputText;
 			this.keyword = this.proposedKeyword;
 			const newSteps: VigenereCipherStep[] = [];
@@ -179,14 +183,15 @@ class VigenereCipher {
 			this.setSteps(newSteps);
 
 			this.broadcastStepChange(this.steps);
+			this.broadcastLastActionChange(lastAction);
 		}
 	}
 
 	@action.bound
 	decrypt(): void {
 		if (this.isValid && this.proposedInputText !== null && this.proposedKeyword !== null) {
-
-			this.setlastAction(ACTION_TYPE.DECRYPT);
+			const lastAction: ACTION_TYPE = ACTION_TYPE.DECRYPT;
+			this.setlastAction(lastAction);
 			this.inputText = this.proposedInputText;
 			this.keyword = this.proposedKeyword;
 			const newSteps: VigenereCipherStep[] = [];
@@ -213,6 +218,7 @@ class VigenereCipher {
 					this.setSteps(newSteps);
 
 					this.broadcastStepChange(this.steps);
+					this.broadcastLastActionChange(lastAction);
 				}
 		}
 	}
@@ -220,6 +226,11 @@ class VigenereCipher {
 	@action.bound
 	setBroadcastStepChange(newBroadcaster: (steps: VigenereCipherStep[]) => void): void {
 		this.broadcastStepChange = newBroadcaster;
+	}
+
+	@action.bound
+	setBroadcastLastActionChange(newBroadcaster: (newAction: ACTION_TYPE) => void): void {
+		this.broadcastLastActionChange = newBroadcaster;
 	}
 
 	@action.bound

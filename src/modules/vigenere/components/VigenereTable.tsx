@@ -88,8 +88,8 @@ function stateInjector({ rootStore }: GlobalState): VigenereTableDataProps {
 		highlightedColumn: rootStore.moduleStore.vigenereVisualizerStore.highlightedColumn !== null
 			? rootStore.moduleStore.vigenereVisualizerStore.highlightedColumn
 			: undefined,
-		highlightedRow: rootStore.moduleStore.vigenereVisualizerStore.highlighterRow !== null
-			? rootStore.moduleStore.vigenereVisualizerStore.highlighterRow
+		highlightedRow: rootStore.moduleStore.vigenereVisualizerStore.highlightedRow !== null
+			? rootStore.moduleStore.vigenereVisualizerStore.highlightedRow
 			: undefined,
 		animationSpeed: rootStore.visualizerControlStore.animationSpeedInMs
 	};
