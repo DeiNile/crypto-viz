@@ -1,0 +1,7 @@
+@import './CeasarVars.scss';
+
+.crypto-table.ceasar-shifted-alphabet {
+	.vertical-highlight {
+		background-color: $output-highlight-color;
+	}
+}
