@@ -1,4 +1,4 @@
-import { EncryptionAlgorithm, ACTION_TYPE } from '../../../stores/EncryptionAlgorithm';
+import { ACTION_TYPE } from '../../../stores/EncryptionAlgorithm';
 import { observable, action, computed } from 'mobx';
 import { modulo } from '../../../utils/modulo';
 import { RootStore } from '../../../stores/RootStore';
@@ -15,7 +15,7 @@ interface CeasarCipherStep {
 	outputTextAlphabetCharacter: string;
 }
 
-class CeasarCipher extends EncryptionAlgorithm {
+class CeasarCipher {
 
 	private readonly rootStore: RootStore;
 	private static readonly validatorPattern: RegExp = /^[A-Z]+$/;
@@ -34,14 +34,18 @@ class CeasarCipher extends EncryptionAlgorithm {
 	@observable steps: CeasarCipherStep[] = [];
 
 	constructor(rootStore: RootStore) {
-		super();
-
 		this.rootStore = rootStore;
 	}
 
 	/**
 	 * Computed
 	 */
+
+
+
+	@computed get hasEncryptedDecrypted(): boolean {
+		return this.lastAction !== null;
+	}
 
 	 @computed
 	 get shitedAlphabet(): string[] {
@@ -159,6 +163,25 @@ class CeasarCipher extends EncryptionAlgorithm {
 
 			this.setSteps(newSteps);
 		}
+	}
+
+
+	@action.bound
+	setlastAction(lastAction: ACTION_TYPE): void {
+		this.lastAction = lastAction;
+	}
+
+	@action.bound
+	setInputText(inputText: string): void {
+		const text: string = inputText.toUpperCase();
+		if (text.match(CeasarCipher.validatorPattern)) {
+			this.proposedInputText = text;
+		}
+	}
+
+	@action.bound
+	protected setSteps(steps: any[]): void {
+		this.steps = steps;
 	}
 
 	/*

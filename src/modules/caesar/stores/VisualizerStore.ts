@@ -39,6 +39,22 @@ class CeasarVisualizerStore {
 		this.ceasarCipher = rootStore.algorithm as CeasarCipher;
 	}
 
+	@computed get canShowInputAlphabetHighlight(): boolean {
+		return this.animationStep !== CeasarAnimationType.INPUT;
+	}
+
+	@computed get canShowOutputAlphabetHighlight(): boolean {
+		return this.animationStep === CeasarAnimationType.OUTPUT || this.animationStep === CeasarAnimationType.ALPHABET_END;
+	}
+
+	@computed get canShowOutputTextHighlight(): boolean {
+		return this.animationStep === CeasarAnimationType.OUTPUT;
+	}
+
+	@computed get highlightedAlphabetIndex(): number {
+		return this.steps[this.relativeAnimationIndex].inputTextAlphabetIndex;
+	}
+
 	@computed get hasSteps(): boolean {
 		return this.steps.length > 0;
 	}

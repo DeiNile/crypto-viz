@@ -5,17 +5,7 @@ import { GlobalState } from '../../../components/CryptoViz';
 import { assertUninitializedVigenereCipher, assertUnitializedVigenereVisualizer } from '../utils/assertUnitializer';
 import { safeGet } from '../../../utils/safeget';
 import { ACTION_TYPE } from '../../caesar/stores/CeasarCipher';
-
-
-function highlightAt(value: string, className: string, i?: number) {
-	if (i !== undefined && i < value.length) {
-		const highlightedCharacter: string = value.charAt(i);
-
-		return <span>{value.slice(0, i)}<mark className={className}>{highlightedCharacter}</mark>{value.slice(i + 1)}</span>;
-	}
-
-	return <span>{value}</span>;
-}
+import { highlightCharacterAt } from '../../../utils/highlightCharacterAt';
 
 
 interface AlignedLabeledTextProps {
@@ -47,13 +37,13 @@ const BaseAlignedLabeledText: React.SFC<AlignedLabeledTextProps> = (props: Align
 	return (
 		<div className='aligned-labeled-text'>
 			<label>{inputDisplayName}:</label>
-			{highlightAt(inputText, 'input-highlight', inputHighlightIndex)}
+			{highlightCharacterAt(inputText, 'input-highlight', inputHighlightIndex)}
 
 			<label>Keyword:</label>
-			{highlightAt(keyword, 'keyword-highlight', keywordHighlightIndex)}
+			{highlightCharacterAt(keyword, 'keyword-highlight', keywordHighlightIndex)}
 
 			<label>{outputDisplayName}:</label>
-			{highlightAt(outputText, 'output-highlight', outputHighlightIndex)}
+			{highlightCharacterAt(outputText, 'output-highlight', outputHighlightIndex)}
 		</div>
 	);
 };
