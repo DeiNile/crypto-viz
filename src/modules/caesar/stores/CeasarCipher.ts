@@ -101,7 +101,7 @@ class CeasarCipher {
 		if (this.isValid && this.proposedInputText !== null) {
 			this.setlastAction(ACTION_TYPE.ENCRYPT);
 			this.inputText = this.proposedInputText;
-			this.rootStore.visualizerStore.clearSteps();
+			this.rootStore.moduleStore.ceasarVisualizerStore!.clearSteps();
 			this.outputText = '';
 			const newSteps: CeasarCipherStep[] = [];
 
@@ -121,7 +121,7 @@ class CeasarCipher {
 					outputTextIndex: i,
 					outputTextCharacter: encryptedCharacter
 				};
-				this.rootStore.visualizerStore.addStep(stepValue);
+				this.rootStore.moduleStore.ceasarVisualizerStore!.addStep(stepValue);
 				newSteps.push(stepValue);
 				this.outputText += encryptedCharacter;
 			}
@@ -136,7 +136,7 @@ class CeasarCipher {
 		if (this.isValid && this.proposedInputText !== null) {
 			this.setlastAction(ACTION_TYPE.DECRYPT);
 			this.inputText = this.proposedInputText;
-			this.rootStore.visualizerStore.clearSteps();
+			this.rootStore.moduleStore.ceasarVisualizerStore!.clearSteps();
 			this.outputText = '';
 			const newSteps: CeasarCipherStep[] = [];
 
@@ -156,7 +156,7 @@ class CeasarCipher {
 					outputTextIndex: i,
 					outputTextCharacter: decryptedCharacter
 				};
-				this.rootStore.visualizerStore.addStep(stepValue);
+				this.rootStore.moduleStore.ceasarVisualizerStore!.addStep(stepValue);
 				newSteps.push(stepValue);
 				this.outputText += decryptedCharacter;
 			}

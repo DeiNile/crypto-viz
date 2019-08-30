@@ -6,6 +6,7 @@ import { LabeledInputText } from './LabeledInputText';
 import { LabeledOutputText } from './LabeledOutputText';
 import { LabeledAlphabet } from './LabeledAlphabet';
 import { LabeledShiftedAlphabet } from './LabeledShiftedAlphabet';
+import { assertUninitializedCeasarCipher } from '../../vigenere/utils/assertUnitializer';
 
 interface CeasarCipherCanvasProps {
 	isVisible: boolean;
@@ -33,8 +34,13 @@ type InjectedCaesarCipherCanvasProps = CeasarCipherCanvasProps;
 interface StatefulCaesarCipherCanvasProps {}
 
 function stateInjector({rootStore}: GlobalState): InjectedCaesarCipherCanvasProps {
+
+	if (rootStore.moduleStore.ceasarCipher === null) {
+		throw assertUninitializedCeasarCipher();
+	}
+
 	return {
-		isVisible: rootStore.algorithm.hasEncryptedDecrypted
+		isVisible: rootStore.moduleStore.ceasarCipher.hasEncryptedDecrypted
 	};
 }
 

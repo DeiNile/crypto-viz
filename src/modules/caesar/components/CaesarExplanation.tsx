@@ -5,6 +5,7 @@ import { CeasarCipherStep, CeasarCipher, ACTION_TYPE } from '../stores/CeasarCip
 import { GlobalState } from '../../../components/CryptoViz';
 import { ExplanationCollapser } from '../../../components/ExplanationCollapser';
 import { ExplanationExpander } from '../../../components/ExplanationExpander';
+import { assertUninitializedCeasarCipher, assertUninitializedCeasarCipherVisualizer } from '../../vigenere/utils/assertUnitializer';
 
 
 interface CaesarExplanationDatProps {
@@ -129,15 +130,24 @@ class BaseCaesarExplanation extends React.Component<CaesarExplanationProps> {
 }
 
 function stateInjector({rootStore}: GlobalState): CaesarExplanationProps {
+
+	if (rootStore.moduleStore.ceasarCipher === null) {
+		throw assertUninitializedCeasarCipher();
+	}
+
+	if (rootStore.moduleStore.ceasarVisualizerStore === null) {
+		throw assertUninitializedCeasarCipherVisualizer();
+	}
+
 	return {
-		isVisible: rootStore.visualizerStore.currentlyHighlightedText !== null,
-		isExpanded: rootStore.visualizerStore.isShowingExplanation,
-		currentStep: rootStore.visualizerStore.currentStep,
-		isExplanationTextVisible: rootStore.algorithm.inputText !== null && rootStore.algorithm.outputText !== null,
-		isEncrypting: (rootStore.algorithm as CeasarCipher).lastAction === ACTION_TYPE.ENCRYPT,
-		animationStep: rootStore.visualizerStore.animationStep,
-		shiftAmount: (rootStore.algorithm as CeasarCipher).shiftAmount,
-		setIsExpanded: rootStore.visualizerStore.setIsShowingExplanation
+		isVisible: rootStore.moduleStore.ceasarVisualizerStore.currentlyHighlightedText !== null,
+		isExpanded: rootStore.moduleStore.ceasarVisualizerStore.isShowingExplanation,
+		currentStep: rootStore.moduleStore.ceasarVisualizerStore.currentStep,
+		isExplanationTextVisible: rootStore.moduleStore.ceasarCipher.inputText !== null && rootStore.moduleStore.ceasarCipher.outputText !== null,
+		isEncrypting: (rootStore.moduleStore.ceasarCipher as CeasarCipher).lastAction === ACTION_TYPE.ENCRYPT,
+		animationStep: rootStore.moduleStore.ceasarVisualizerStore.animationStep,
+		shiftAmount: (rootStore.moduleStore.ceasarCipher as CeasarCipher).shiftAmount,
+		setIsExpanded: rootStore.moduleStore.ceasarVisualizerStore.setIsShowingExplanation
 	};
 }
 

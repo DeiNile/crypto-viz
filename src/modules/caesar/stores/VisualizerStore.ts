@@ -36,7 +36,7 @@ class CeasarVisualizerStore {
 
 	constructor(rootStore: RootStore) {
 		this.rootStore = rootStore;
-		this.ceasarCipher = rootStore.algorithm as CeasarCipher;
+		this.ceasarCipher = rootStore.moduleStore.ceasarCipher!;
 	}
 
 	@computed get canShowInputAlphabetHighlight(): boolean {
