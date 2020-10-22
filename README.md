@@ -1,44 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# CryptoViz
 
-## Available Scripts
+CryptoViz is a hobby project intended to demonstrate the viability of an interactive visualization tool for encryption algorythms. It is not intended to be a tool for ensuring cryptographic viability, instead it is an educational tool. The main thrust of the project is to provide a more intuitive way to demonstrating the implementation of encryption algorithms. In general, given the input needed to perform a run a specific encryption (or decryption) algorithm this tool will visualize what is happening and provide explanations for what is happening at each logical step in the process.
 
-In the project directory, you can run:
+*Supported algorithms*
+- Ceasar Cipher
+- Vigenere Cipher
 
-### `npm start`
+## Installation and whatnot
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Clone the project to your local machine and run `npm run install` to install the dependencies for the project.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+`npm run start` will start the webpack dev server and make the application available at `http://localhost:8080/`.
 
-### `npm test`
+`npm run build` will bundle the project so it can be published on a dedicated web server. However this was never tested, so your mileage may vary with this one.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Future plans
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+I would have liked to implement more ciphers, and more complex ones as well. However, doing so would require a lot of time investment as each cipher needs to be reimplemented from scract. This is due to the visualizer needing access to all the temporary data that is using during the encryption/decryption process. As such I cannot leverage existing libraries as they hide that information. Additionally, I feel I have proven the viability of such a tool with the two ciphers currently implemented. Additional ones will be added only if time and motivation permits.
